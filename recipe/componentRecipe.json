@@ -1,0 +1,57 @@
+{
+	"RecipeFormatVersion": "2020-01-25",
+	"ComponentName": "com.example.SubscriberContainer",
+	"ComponentVersion": "1.0.0",
+	"ComponentType": "aws.greengrass.generic",
+	"ComponentDescription": "A component that runs a Docker container and uses interprocess communication.",
+	"ComponentPublisher": "Amazon",
+	"ComponentConfiguration": {
+		"DefaultConfiguration": {
+			"MSG_COUNT_LIMIT": "2000",
+			"accessControl": {
+				"aws.greengrass.ipc.pubsub": {
+					"com.example.subscriberrepo:pubsub:1": {
+						"policyDescription": "Allows access to subscribe to all topics.",
+						"operations": [
+							"*"
+						],
+						"resources": [
+							"*"
+						]
+					}
+				}
+			}
+		}
+	},
+	"ComponentDependencies": {
+		"aws.greengrass.DockerApplicationManager": {
+			"VersionRequirement": ">=2.0.0 <2.1.0",
+			"DependencyType": "HARD"
+		},
+		"aws.greengrass.TokenExchangeService": {
+			"VersionRequirement": ">=2.0.0 <2.1.0",
+			"DependencyType": "HARD"
+		}
+	},
+	"Manifests": [
+		{
+			"Platform": {
+				"os": "all"
+			},
+			"Lifecycle": {
+				"Run": "docker run --rm -v /greengrass/v2:/greengrass/v2 -v /home/ubuntu/environment/subscriberdocker/logfiles:/tmp -e AWS_REGION -e SVCUID -e MSG_COUNT_LIMIT={configuration:/MSG_COUNT_LIMIT} -e AWS_GG_NUCLEUS_DOMAIN_SOCKET_FILEPATH_FOR_COMPONENT -e AWS_CONTAINER_AUTHORIZATION_TOKEN -e AWS_CONTAINER_CREDENTIALS_FULL_URI <ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/subscriber-container:latest"
+			},
+			"Artifacts": [
+				{
+					"Uri": "docker:<ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/subscriber-container:latest",
+					"Unarchive": "NONE",
+					"Permission": {
+						"Read": "OWNER",
+						"Execute": "NONE"
+					}
+				}
+			]
+		}
+	],
+	"Lifecycle": {}
+}
