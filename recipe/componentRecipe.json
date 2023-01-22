@@ -43,7 +43,7 @@
 			},
 			"Artifacts": [
 				{
-					"Uri": "325873779193.dkr.ecr.us-east-2.amazonaws.com/temp-sensor-driver:latest",
+					"Uri": "docker:325873779193.dkr.ecr.us-east-2.amazonaws.com/temp-sensor-driver:latest",
 					"Unarchive": "NONE",
 					"Permission": {
 						"Read": "OWNER",
