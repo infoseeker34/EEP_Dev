@@ -16,7 +16,7 @@ build_image:
     - export AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
     
   script:
-    - docker build -t $REGISTRY_URI/$APP_NAME:$CI_PIPELINE_IID .
+    - docker build -t $REGISTRY_URI/$APP_NAME:latest .
     - aws ecr get-login-password | docker login --username AWS --password-stdin $REGISTRY_URI
-    - docker push $REGISTRY_URI/$APP_NAME:$CI_PIPELINE_IID
+    - docker push $REGISTRY_URI/$APP_NAME:latest
     - aws greengrassv2 create-component-version --inline-recipe fileb://recipe/componentRecipe.json --region $AWS_DEFAULT_REGION
