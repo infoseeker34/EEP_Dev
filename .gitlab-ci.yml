@@ -9,6 +9,15 @@ build_image:
     - name: docker:20.10.16-dind 
   before_script:
     - amazon-linux-extras install docker
+
+    - mkdir -vp ~/.docker/cli-plugins/
+    - curl --silent -L "https://github.com/docker/buildx/releases/download/v0.3.0/buildx-v0.3.0.linux-amd64" > ~/.docker/cli-plugins/docker-buildx
+    - chmod a+x ~/.docker/cli-plugins/docker-buildx
+
+    - docker buildx create --name $APP_NAME --use
+    - docker buildx inspect --bootstrap
+    - docker run --privileged --rm tonistiigi/binfmt --install all
+
     - aws --version
     - docker --version
     - export AWS_ACCESS_KEY_ID=$REGISTRY_ID
@@ -18,5 +27,6 @@ build_image:
   script:
     - docker build -t $REGISTRY_URI/$APP_NAME:latest .
     - aws ecr get-login-password | docker login --username AWS --password-stdin $REGISTRY_URI
-    - docker push $REGISTRY_URI/$APP_NAME:latest
+    - docker buildx build --progress plain --platform linux/amd64,linux/arm64 -t $REGISTRY_URI/$APP_NAME:latest --push .
+    #- docker push $REGISTRY_URI/$APP_NAME:latest
     - aws greengrassv2 create-component-version --inline-recipe fileb://recipe/componentRecipe.json --region $AWS_DEFAULT_REGION
