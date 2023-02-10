@@ -30,3 +30,4 @@ build_image:
     - docker buildx build --progress plain --platform linux/amd64,linux/arm64 -t $REGISTRY_URI/$APP_NAME:latest --push .
     #- docker push $REGISTRY_URI/$APP_NAME:latest
     - aws greengrassv2 create-component-version --inline-recipe fileb://recipe/componentRecipe.json --region $AWS_DEFAULT_REGION
+    - aws greengrassv2 create-component-version --inline-recipe fileb://recipe/componentDevRecipe.json --region $AWS_DEFAULT_REGION
