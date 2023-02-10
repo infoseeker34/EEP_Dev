@@ -1,7 +1,7 @@
 {
 	"RecipeFormatVersion": "2020-01-25",
 	"ComponentName": "tempSensorDriver.Container",
-	"ComponentVersion": "1.0.0",
+	"ComponentVersion": "1.0.1",
 	"ComponentType": "aws.greengrass.generic",
 	"ComponentDescription": "A component that runs a Docker container and uses interprocess communication.",
 	"ComponentPublisher": "Amazon",
@@ -39,7 +39,8 @@
 				"os": "all"
 			},
 			"Lifecycle": {
-				"Run": "docker run --rm -v /greengrass/v2:/greengrass/v2 -v /home/ubuntu/environment/subscriberdocker/logfiles:/tmp -e AWS_REGION -e SVCUID -e MSG_COUNT_LIMIT={configuration:/MSG_COUNT_LIMIT} -e AWS_GG_NUCLEUS_DOMAIN_SOCKET_FILEPATH_FOR_COMPONENT -e AWS_CONTAINER_AUTHORIZATION_TOKEN -e AWS_CONTAINER_CREDENTIALS_FULL_URI 325873779193.dkr.ecr.us-east-2.amazonaws.com/temp-sensor-driver:latest"
+				"Run": "docker run --rm -v /greengrass/v2:/greengrass/v2 -v /home/ubuntu/environment/subscriberdocker/logfiles:/tmp -e AWS_REGION -e SVCUID -e MSG_COUNT_LIMIT={configuration:/MSG_COUNT_LIMIT} -e AWS_GG_NUCLEUS_DOMAIN_SOCKET_FILEPATH_FOR_COMPONENT -e AWS_CONTAINER_AUTHORIZATION_TOKEN -e AWS_CONTAINER_CREDENTIALS_FULL_URI 325873779193.dkr.ecr.us-east-2.amazonaws.com/temp-sensor-driver:latest",
+				"RequiresPrivilege":true
 			},
 			"Artifacts": [
 				{
