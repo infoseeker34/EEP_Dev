@@ -1,49 +1,50 @@
-# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-# SPDX-License-Identifier: MIT-0
-import time
-import datetime
-import json
+import concurrent.futures
 import sys
-import signal
-import os
+import time
+import traceback
+
 import awsiot.greengrasscoreipc
 from awsiot.greengrasscoreipc.model import (
     PublishToTopicRequest,
     PublishMessage,
-    JsonMessage
+    BinaryMessage,
+    UnauthorizedError
 )
-from dummy_sensor import DummySensor
 
-#kill process 
-def sighandler(a,b):
-    sys.exit(0)
-    
-signal.signal(signal.SIGINT | signal.SIGTERM, sighandler)
-
+                    
+topic = "test/topic/python"
+message = "Hello from the pub/sub publisher (Python)."
 TIMEOUT = 10
-publish_rate = 1.0
 
-ipc_client = awsiot.greengrasscoreipc.connect()
+try:
+    ipc_client = awsiot.greengrasscoreipc.connect()
 
-sensor = DummySensor()
+    while True:
+        request = PublishToTopicRequest()
+        request.topic = topic
+        publish_message = PublishMessage()
+        publish_message.binary_message = BinaryMessage()
+        publish_message.binary_message.message = bytes(message, "utf-8")
+        request.publish_message = publish_message
+        operation = ipc_client.new_publish_to_topic()
+        operation.activate(request)
+        futureResponse = operation.get_response()
 
-topic = "my/topic"
-
-while True:
-    message = {"timestamp": str(datetime.datetime.now()),
-               "value": sensor.read_value()}
-    message_json = json.dumps(message).encode('utf-8')
-
-    request = PublishToTopicRequest()
-    request.topic = topic
-    publish_message = PublishMessage()
-    publish_message.json_message = JsonMessage()
-    publish_message.json_message.message = message
-    request.publish_message = publish_message
-    operation = ipc_client.new_publish_to_topic()
-    operation.activate(request)
-    future = operation.get_response()
-    future.result(TIMEOUT)
-    
-    print(f"publisher is successful! {message_json}")
-    time.sleep(1/publish_rate)
+        try:
+            futureResponse.result(TIMEOUT)
+            print('Successfully published to topic: ' + topic)
+        except concurrent.futures.TimeoutError:
+            print('Timeout occurred while publishing to topic: ' + topic, file=sys.stderr)
+        except UnauthorizedError as e:
+            print('Unauthorized error while publishing to topic: ' + topic, file=sys.stderr)
+            raise e
+        except Exception as e:
+            print('Exception while publishing to topic: ' + topic, file=sys.stderr)
+            raise e
+        time.sleep(5)
+except InterruptedError:
+    print('Publisher interrupted.')
+except Exception:
+    print('Exception occurred when using IPC.', file=sys.stderr)
+    traceback.print_exc()
+    exit(1)
