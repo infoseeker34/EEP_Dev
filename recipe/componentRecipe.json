@@ -9,6 +9,20 @@
 		"DefaultConfiguration": {
 			"MSG_COUNT_LIMIT": "2000",
 			"accessControl": {
+				"aws.greengrass.ShadowManager": {
+					"tempSensorDriver.Container:shadow:1": {
+					  "policyDescription": "Allows access to shadows",
+					  "operations": [
+						"aws.greengrass#GetThingShadow",
+						"aws.greengrass#UpdateThingShadow",
+						"aws.greengrass#DeleteThingShadow"
+					  ],
+					  "resources": [
+						"$aws/things/{iot:thingName}/shadow",
+						"$aws/things/{iot:thingName}/shadow/name/myNamedShadow"
+					  ]
+					}
+				},
 				"aws.greengrass.ipc.pubsub": {
 					"tempSensorDriver.Container:pubsub:1": {
 						"policyDescription": "Allows access to pub/sub to all topics.",
