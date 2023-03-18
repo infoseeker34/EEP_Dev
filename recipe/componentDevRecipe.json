@@ -1,7 +1,7 @@
 {
 	"RecipeFormatVersion": "2020-01-25",
 	"ComponentName": "DEV_tempSensorDriver.Container",
-	"ComponentVersion": "1.0.4",
+	"ComponentVersion": "1.0.5",
 	"ComponentType": "aws.greengrass.generic",
 	"ComponentDescription": "A component that runs a Docker container and uses interprocess communication.",
 	"ComponentPublisher": "Amazon",
