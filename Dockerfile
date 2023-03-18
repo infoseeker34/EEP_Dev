@@ -4,7 +4,7 @@ FROM ubuntu:focal
 RUN apt-get update -y && \
     apt-get install -y python3 && \
     apt-get install -y python3-pip && \
-    pip3 install numpy && \
+    #pip3 install numpy && \
     pip3 install awsiotsdk 
 
 # run selected files
