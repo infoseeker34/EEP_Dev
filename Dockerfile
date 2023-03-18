@@ -2,6 +2,7 @@ FROM ubuntu:focal
 
 # Install dependencies
 RUN apt-get update -y && \
+    apt-get install -y cmake && \
     apt-get install -y python3 && \
     apt-get install -y python3-pip && \
     #pip3 install numpy && \
