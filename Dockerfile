@@ -1,9 +1,9 @@
-FROM public.ecr.aws/amazonlinux/amazonlinux:latest
+FROM ubuntu:latest
 
 # Install dependencies
-RUN yum update -y && \
-    yum install -y python3 && \
-    yum install -y python3-pip && \
+RUN apt-get update -y && \
+    apt-get install -y python3 && \
+    apt-get install -y python3-pip && \
     pip3 install numpy && \
     pip3 install awsiotsdk 
 
