@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:focal
 
 # Install dependencies
 RUN apt-get update -y && \
