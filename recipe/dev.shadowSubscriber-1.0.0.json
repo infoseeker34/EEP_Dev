@@ -1,0 +1,61 @@
+{
+    "RecipeFormatVersion": "2020-01-25",
+    "ComponentName": "dev.shadowSubscriber",
+    "ComponentVersion": "1.0.0",
+    "ComponentDescription": "shadow manager",
+    "ComponentPublisher": "Me",
+    "ComponentConfiguration": {
+      "DefaultConfiguration": {
+        "accessControl": {
+            "aws.greengrass.ipc.pubsub": {
+              "dev.shadowSubscriber:pubsub:1": {
+                "policyDescription": "Allows access to all topics",
+                "operations": [
+                  "*"
+                ],
+                "resources": [
+                  "*"
+                ]
+              }
+            },
+            "aws.greengrass.ShadowManager": {
+              "dev.shadowSubscriber:shadow:1": {
+                "policyDescription": "Allows access to shadows",
+                "operations": [
+                  "*"
+                ],
+                "resources": [
+                  "*"
+                ]
+              },
+              "dev.shadowSubscriber:shadow:2": {
+                "policyDescription": "Allows access to things with shadows",
+                "operations": [
+                  "*"
+                ],
+                "resources": [
+                  "*"
+                ]
+              }    
+            }
+          }
+      }
+    },
+    "Manifests": [
+      {
+        "Platform": {
+          "os": "linux"
+        },
+        "Lifecycle": {
+          "Install": {
+            "RequiresPrivilege": true,
+            "script": "python3 -m pip install --user setuptools && python3 -m pip install --user awsiot && python3 -m pip install --user awsiotsdk"
+          },
+          "Run": {
+            "RequiresPrivilege": true,
+            "script": "python3 -u /home/nathan/Documents/eep/fingerCounterDev/artifacts/dev.shadowSubscriber/1.0.0/dev.shadowSubscriber.py"
+          }
+        }
+      }
+    ]
+  }

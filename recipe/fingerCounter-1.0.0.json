@@ -1,0 +1,63 @@
+{
+    "RecipeFormatVersion": "2020-01-25",
+    "ComponentName": "fingerCounter",
+    "ComponentVersion": "1.0.0",
+    "ComponentDescription": "Finger counter computer vision app",
+    "ComponentPublisher": "Me",
+    "ComponentConfiguration": {
+      "DefaultConfiguration": {
+        "accessControl": {
+            "aws.greengrass.ipc.pubsub": {
+              "dev.shadowSubscriber:pubsub:1": {
+                "policyDescription": "Allows access to all topics",
+                "operations": [
+                  "*"
+                ],
+                "resources": [
+                  "*"
+                ]
+              }
+            },
+            "aws.greengrass.ShadowManager": {
+              "fingerCounter:shadow:1": {
+                "policyDescription": "Allows access to shadows",
+                "operations": [
+                  "aws.greengrass#GetThingShadow",
+                  "aws.greengrass#UpdateThingShadow",
+                  "aws.greengrass#DeleteThingShadow"
+                ],
+                "resources": [
+                  "*"
+                ]
+              },
+              "fingerCounter:shadow:2": {
+                "policyDescription": "Allows access to things with shadows",
+                "operations": [
+                  "aws.greengrass#ListNamedShadowsForThing"
+                ],
+                "resources": [
+                  "*"
+                ]
+              }    
+            }
+          }
+      }
+    },
+    "Manifests": [
+      {
+        "Platform": {
+          "os": "linux"
+        },
+        "Lifecycle": {
+          "Install": {
+            "RequiresPrivilege": true,
+            "script": "python3 -m pip install --user awsiotsdk"
+          },
+          "Run": {
+            "RequiresPrivilege": true,
+            "script": "python3 -u /home/nathan/Documents/eep/fingerCounterDev/artifacts/fingerCounter/1.0.0/FingerCounter.py"
+          }
+        }
+      }
+    ]
+  }
