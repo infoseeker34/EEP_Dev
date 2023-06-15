@@ -65,11 +65,11 @@ class SubHandler(client.SubscribeToTopicStreamHandler):
 
 
 class shadowState():
-    def __init__(self, shadowMode='classic', shadowName='', thingName='NathansDevJetson2', topic='$aws/things/NathansDevJetson/shadow/update/accepted'):
-        self.shadowMode = shadowMode
+    def __init__(self, shadowName='', thingName='EEP_TestDevice_104'):
+
         self.shadowName = shadowName
         self.thingName = thingName
-        self.topic = topic
+        self.topic = '$aws/things/' + thingName + '/shadow/update/accepted'
 
     def subscribe_to_shadow_update(self):
         try:

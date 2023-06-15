@@ -49,11 +49,11 @@
         "Lifecycle": {
           "Install": {
             "RequiresPrivilege": true,
-            "script": "python3 -m pip install --user setuptools && python3 -m pip install --user awsiot && python3 -m pip install --user awsiotsdk"
+            "script": "python3 -m pip install --user setuptools && python3 -m pip install --user awsiotsdk"
           },
           "Run": {
             "RequiresPrivilege": true,
-            "script": "python3 -u /home/nathan/Documents/eep/fingerCounterDev/artifacts/dev.shadowSubscriber/1.0.0/dev.shadowSubscriber.py"
+            "script": "python3 -u /home/ubuntu/EEP_Dev/artifacts/dev.shadowSubscriber/1.0.0/dev.shadowSubscriber.py"
           }
         }
       }

@@ -1,0 +1,9 @@
+/greengrass/v2/bin/greengrass-cli deployment create --recipeDir /home/nathan/Documents/eep/components/recipe --artifactDir /home/nathan/Documents/eep/components/artifacts --merge "dev.publisher=1.0.0"
+
+/greengrass/v2/bin/greengrass-cli get-debug-password
+
+/greengrass/v2/bin/greengrass-cli component list
+
+/greengrass/v2/bin/greengrass-cli deployment create --recipeDir /home/nathan/Documents/eep/components/recipe --artifactDir /home/nathan/Documents/eep/components/artifacts/dev.subscriber --merge "dev.subscriber=1.0.0"
+
+/greengrass/v2/bin/greengrass-cli deployment create --remove "component name"
