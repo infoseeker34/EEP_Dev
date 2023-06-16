@@ -17,7 +17,8 @@ from awsiot.greengrasscoreipc.model import (
     UpdateThingShadowRequest
 )
 
-state = ''
+# initial settings for the reported states of the device
+currentstate = json.loads('''{"state": {"reported": {"welcome": "aws-iot", "msg_frequency": 60,"rtsp_url": ""}}}''')
 TIMEOUT = 10
 
 #Handler for subscription callback
@@ -27,25 +28,29 @@ class SubHandler(client.SubscribeToTopicStreamHandler):
 
     def on_stream_event(self, event: SubscriptionResponseMessage) -> None:
 
-        global state
+        global currentstate
         print("Shadow Event Triggered!!")
         
         try:
             
             # grab the message and load it into our state variable
             message_string = str(event.binary_message.message, "utf-8")
-            state = message_string
-            print('Shadow state subscriber has updated global state = ' + state)
-
-            # Load message and check values
-            #jsonmsg = json.loads(message_string)
-
-            #if jsonmsg['state']['desired']['msg_frequency']:
-            #    print("The new msg frequency is:" + str(jsonmsg['state']['desired']['msg_frequency']))
                 
-            #else:
-            #    print("No msg frequency")
+            payload = json.loads(message_string)
+
+            print('Get shadow subscription function has returned the following doc = ' + message_string)
+            
+            if 'desired' in payload['state']:
+                currentstate['state']['reported']['msg_frequency'] = payload['state']['desired']['msg_frequency']
+                currentstate['state']['reported']['rtsp_url'] = payload['state']['desired']['rtsp_url']
                 
+                # update reported state to the broker
+                currentstate_bytes = bytes(json.dumps(currentstate), 'utf-8')
+                print('Reporting the following state to broker = ' + str(currentstate_bytes, 'utf-8'))
+                str_payload = str(state.update_thing_shadow_request(currentstate_bytes), 'utf-8')
+                print('update request returned following result: ' + str_payload)
+            else:
+                print('key \"desired\" not found in shadow doc')    
         except:
             traceback.print_exc()
 
@@ -60,11 +65,11 @@ class SubHandler(client.SubscribeToTopicStreamHandler):
 
 
 class shadowState():
-    def __init__(self, shadowMode='classic', shadowName='', thingName='NathansDevJetson', topic='$aws/things/NathansDevJetson/shadow/update/accepted'):
-        self.shadowMode = shadowMode
+    def __init__(self, shadowName='', thingName='EEP_TestDevice_104'):
+
         self.shadowName = shadowName
         self.thingName = thingName
-        self.topic = topic
+        self.topic = '$aws/things/' + thingName + '/shadow/update/accepted'
 
     def subscribe_to_shadow_update(self):
         try:
@@ -104,7 +109,7 @@ class shadowState():
             get_thing_shadow_request = GetThingShadowRequest()
             get_thing_shadow_request.thing_name = self.thingName
             # set as empty string to request classic shadow
-            get_thing_shadow_request.shadow_name = ""
+            get_thing_shadow_request.shadow_name = self.shadowName
             
             # retrieve the GetThingShadow response after sending the request to the IPC server
             op = ipc_client.new_get_thing_shadow()
@@ -112,13 +117,6 @@ class shadowState():
             fut = op.get_response()
             
             result = fut.result(TIMEOUT)
-
-            # grab the message and load it into our state variable
-            state = result.payload
-            print('Get thingShadow request function has updated global state = ' + state)
-
-            # convert string to json object
-            #jsonmsg = json.loads(result.payload)
 
             return result.payload
             
@@ -137,7 +135,7 @@ class shadowState():
             update_thing_shadow_request = UpdateThingShadowRequest()
             update_thing_shadow_request.thing_name = self.thingName
             # send empty string for classic shadow
-            update_thing_shadow_request.shadow_name = ""
+            update_thing_shadow_request.shadow_name = self.shadowName
             update_thing_shadow_request.payload = payload
                             
             # retrieve the UpdateThingShadow response after sending the request to the IPC server
@@ -152,13 +150,32 @@ class shadowState():
             print("Error update shadow", type(e), e)
             # except ConflictError | UnauthorizedError | ServiceError
 
+    # Return current state
+    def get_currentstate(self):
+        global currentstate
+        return currentstate
 
 
-
+state = shadowState()
 
 def main():
-    print('declaring instance of shadowState')
-    state = shadowState()
+
+    global state
+    global currentstate
+    
+    str_payload = str(state.get_thing_shadow_request(), 'utf-8')
+    payload = json.loads(str_payload)
+
+    print('Get thingShadow request function has returned the following doc = ' + str_payload)
+    currentstate['state']['reported']['msg_frequency'] = payload['state']['desired']['msg_frequency']
+    currentstate['state']['reported']['rtsp_url'] = payload['state']['desired']['rtsp_url']
+    
+    # update reported state to the broker
+    currentstate_bytes = bytes(json.dumps(currentstate), 'utf-8')
+    print('Reporting the following state to broker = ' + str(currentstate_bytes, 'utf-8'))
+    str_payload = str(state.update_thing_shadow_request(currentstate_bytes), 'utf-8')
+    print('update request returned following result: ' + str_payload)
+
     print('calling subscribe function')
     state.subscribe_to_shadow_update()
         

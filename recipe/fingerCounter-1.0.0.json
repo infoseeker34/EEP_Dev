@@ -8,8 +8,19 @@
       "DefaultConfiguration": {
         "accessControl": {
             "aws.greengrass.ipc.pubsub": {
-              "dev.shadowSubscriber:pubsub:1": {
+              "fingerCounter:pubsub:1": {
                 "policyDescription": "Allows access to all topics",
+                "operations": [
+                  "*"
+                ],
+                "resources": [
+                  "*"
+                ]
+              }
+            },
+            "aws.greengrass.ipc.mqttproxy": {
+              "fingerCounter:pubsub:1": {
+                "policyDescription": "Allows access to pub/sub to all topics.",
                 "operations": [
                   "*"
                 ],
@@ -51,11 +62,11 @@
         "Lifecycle": {
           "Install": {
             "RequiresPrivilege": true,
-            "script": "python3 -m pip install --user awsiotsdk"
+            "script": "python3 -m pip install --user imutils"
           },
           "Run": {
             "RequiresPrivilege": true,
-            "script": "python3 -u /home/nathan/Documents/eep/fingerCounterDev/artifacts/fingerCounter/1.0.0/FingerCounter.py"
+            "script": "python3 -u /home/ubuntu/EEP_Dev/artifacts/fingerCounter/1.0.0/FingerCounter.py"
           }
         }
       }
